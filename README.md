@@ -1,2 +1,2 @@
 # Spring-Boot-Java
-A project with some experiments with RESTful API sending back nested JSON's
+A project with some experiments with RESTful API sending back nested JSON's. The project uses Maven
