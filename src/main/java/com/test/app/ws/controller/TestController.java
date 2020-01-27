@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.test.app.ws.controller.oedb.OedbConnection;
 import com.test.app.ws.controller.test.response.ArrayObject;
+import com.test.app.ws.controller.test.response.ConObjectTest;
 import com.test.app.ws.controller.test.response.Test1Object;
 import com.test.app.ws.controller.test.response.Test2Object;
 
@@ -20,7 +22,7 @@ import com.test.app.ws.controller.test.response.Test2Object;
 // use plural
 // http://localhost:8080/tests
 public class TestController {
-
+/*
 	@GetMapping(path = "/{TestNr}", produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Test1Object> getTestResult(@PathVariable String TestNr) {
@@ -38,7 +40,7 @@ public class TestController {
 
 		return new ResponseEntity<Test1Object>(HttpStatus.BAD_REQUEST);
 	}
-
+*/
 	@GetMapping(path = "/{TestNr}/{TestSpec}", produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Test2Object> getTestResult(
@@ -69,4 +71,22 @@ public class TestController {
 		return new ResponseEntity<Test2Object>(HttpStatus.BAD_REQUEST);
 	}
 
+	@GetMapping(path = "/{TestNr}", produces = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<ConObjectTest> getConnectionTestResult(
+			@PathVariable String TestNr) {
+		
+		System.out.println("TestNr " + TestNr);
+		
+		OedbConnection oedb = new OedbConnection();
+		
+		if (TestNr.equals("3")){ 
+				
+			System.out.println("Correct method 3"); 			
+			return new ResponseEntity<ConObjectTest>(oedb.getConnectionObjectCheck(), HttpStatus.OK);
+		}
+
+		return new ResponseEntity<ConObjectTest>(HttpStatus.BAD_REQUEST);
+	}	
+	
 }
