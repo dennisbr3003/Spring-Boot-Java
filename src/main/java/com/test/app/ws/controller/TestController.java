@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.test.app.ws.controller.oedb.OedbConnection;
 import com.test.app.ws.controller.test.response.ArrayObject;
 import com.test.app.ws.controller.test.response.ConObjectTest;
-import com.test.app.ws.controller.test.response.Test1Object;
 import com.test.app.ws.controller.test.response.Test2Object;
 
 @RestController
