@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import com.test.app.ws.controller.collections.response.Collection;
 import com.test.app.ws.controller.collections.response.CollectionsObject;
 
@@ -18,8 +21,8 @@ public class OedbQuery {
 	public OedbQuery(Connection con) throws SQLException {
 		super();
 		this.con = con;
-	}	
-	
+	}
+
 	public OedbQuery(Connection con, String query) throws SQLException {
 		super();
 		this.con = con;
@@ -41,45 +44,74 @@ public class OedbQuery {
 	public void setQuery(String query) {
 		this.query = query;
 	}
-	
-	public CollectionsObject executeQuery() throws SQLException{
-		
-		if(con == null){
-		  System.out.println("Connection = null, do not execute query");
-		  return null;
+
+	public CollectionsObject executeQuery() throws SQLException {
+
+		if (con == null) {
+			System.out.println("Connection = null, do not execute query");
+			return null;
 		}
-		
+
 		stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
-		
+
 		if (rs.next() == false) {
 			System.out.println("ResultSet in empty");
 			throw new SQLException();
 		}
-		
+
 		CollectionsObject co = new CollectionsObject();
 		ArrayList<Collection> sco = new ArrayList<Collection>();
 		co.setTestDescription("Test resultset");
-		// use rs.next() to check if the result set retrieved any record if it did, we are now at the first row.
-		// So in order not to miss the first row we will use it and go to the next after we do execute the logic 
+		// use rs.next() to check if the result set retrieved any record if it
+		// did, we are now at the first row.
+		// So in order not to miss the first row we will use it and go to the
+		// next after we do execute the logic
 		do {
 			System.out.println(rs.getInt("iCollectionNumber"));
 			/* create some object or return result set directly ? */
-			sco.add(new Collection(rs.getInt("iCollectionNumber"), rs.getString("cCollectionName")));
-		} while(rs.next());
+			sco.add(new Collection(rs.getInt("iCollectionNumber"), rs
+					.getString("cCollectionName")));
+		} while (rs.next());
 
 		co.setCollectionObjectArray(sco);
 		co.setResult("OK");
-		
+
 		System.out.println("Done");
 
 		// Clean-up environment
 		rs.close();
-		stmt.close();		
-		
+		stmt.close();
+
 		return co;
 
 	}
-	
-	
+
+	public String executeQueryJson() throws SQLException {
+
+		JSONArray ja = new JSONArray();
+		
+		if (con == null) {
+			System.out.println("Connection = null, do not execute query");
+			return null;
+		}
+		stmt = con.createStatement() ;
+		ResultSet rs = stmt.executeQuery(query);
+
+		try {
+			ja = OedbJson.convert(rs);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("Elements " + ja.length());
+		
+		// Clean-up environment
+		rs.close();
+		stmt.close();
+		return ja != null ? ja.toString() : "[]";
+
+	}
+
 }
